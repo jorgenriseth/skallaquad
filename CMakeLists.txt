@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
-
 project(skallaquad)
+
+set(TARGET_GROUP production CACHE STRING "Group to build")
+
 
 ###############################################################
 # Create shared library
@@ -19,12 +21,14 @@ target_include_directories(${PROJECT_NAME}
 
 
 ###############################################################
-# Create executable binary to verify
+# Create Test Runner
 ###############################################################
+if(TARGET_GROUP STREQUAL test)
+    include(CTest)
 
-add_executable(${PROJECT_NAME}_TEST src/run_integration.c)
-target_link_libraries(${PROJECT_NAME}_TEST
-    PRIVATE
-        m
-        ${PROJECT_NAME}
-)
+    add_subdirectory(external)
+    add_subdirectory(tests)
+else()
+    message(FATAL_ERROR "Given TARGET_GROUP unknown")
+endif()
+
